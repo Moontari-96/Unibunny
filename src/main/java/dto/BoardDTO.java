@@ -13,8 +13,6 @@ public class BoardDTO {
 	private int game_id;
 	private String nickname;
 	
-	
-	
 	public BoardDTO(int board_seq, String title, String content, Timestamp write_date, int view_count, String delete_yn,
 			Timestamp delete_date, int game_id, String nickname) {
 		super();
@@ -28,6 +26,7 @@ public class BoardDTO {
 		this.game_id = game_id;
 		this.nickname = nickname;
 	}
+	
 	public int getBoard_seq() {
 		return board_seq;
 	}
@@ -82,8 +81,4 @@ public class BoardDTO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
-	
-	
-	
-	}
+}
