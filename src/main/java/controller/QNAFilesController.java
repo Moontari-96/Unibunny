@@ -37,15 +37,17 @@ public class QNAFilesController extends HttpServlet {
                 String realPath = request.getServletContext().getRealPath("files");
                 File uploadPath = new File(realPath);
                 if (!uploadPath.exists()) {
-                    uploadPath.mkdir();
+                    uploadPath.mkdir(); // 업로드 디렉토리가 없으면 생성
                 }
 
+                // MultipartRequest를 사용하여 파일 업로드 처리
                 MultipartRequest multi = new MultipartRequest(request, realPath, maxSize, "UTF-8",
                         new DefaultFileRenamePolicy());
 
-                int question_seq = Integer.parseInt(multi.getParameter("question_seq"));
+                int question_seq = Integer.parseInt(multi.getParameter("question_seq")); // 질문 번호 가져오기
                 Enumeration<String> fileNames = multi.getFileNames();
 
+                // 업로드된 각 파일에 대해 처리
                 while (fileNames.hasMoreElements()) {
                     String name = fileNames.nextElement();
                     String oriname = multi.getOriginalFileName(name);
@@ -54,6 +56,7 @@ public class QNAFilesController extends HttpServlet {
                     System.out.println("Original File Name: " + oriname);
                     System.out.println("System File Name: " + sysname);
 
+                    // 파일 이름이 존재하면 DTO에 설정하여 DAO를 통해 데이터베이스에 저장
                     if (oriname != null && sysname != null) {
                         QNAFilesDTO fileDto = new QNAFilesDTO();
                         fileDto.setOriname(oriname);
@@ -63,6 +66,7 @@ public class QNAFilesController extends HttpServlet {
                     }
                 }
 
+                // 업로드 성공 응답
                 response.getWriter().write("{\"status\":\"success\"}");
             } else if (cmd.equals("/download.qnafile")) {
                 // 파일 다운로드 처리
@@ -70,18 +74,20 @@ public class QNAFilesController extends HttpServlet {
                 String filePath = getServletContext().getRealPath("files") + File.separator + fileName;
                 File file = new File(filePath);
 
+                // 파일이 존재하는 경우
                 if (file.exists()) {
                     response.setContentType("application/octet-stream");
                     response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("UTF-8"), "ISO8859_1"));
                     try (FileInputStream in = new FileInputStream(file); OutputStream out = response.getOutputStream()) {
                         byte[] buffer = new byte[1024];
                         int bytesRead;
+                        // 파일 내용을 읽어서 응답 스트림에 씀
                         while ((bytesRead = in.read(buffer)) != -1) {
                             out.write(buffer, 0, bytesRead);
                         }
                     }
                 } else {
-                    response.getWriter().write("Requested file not found.");
+                    response.getWriter().write("파일이 존재하지 않습니다.");
                 }
             }
         } catch (Exception e) {
