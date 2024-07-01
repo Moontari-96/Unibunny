@@ -295,6 +295,10 @@
   bottom: 30%;
 }
 
+.con_wrap.main_con .dual_con .rank_con .rank_cont div a  img{
+	object-fit:cover;
+}
+
 
 /* 게시판 콘테이너  */
 .con_wrap.main_con .dual_con .noti_con {
@@ -1282,8 +1286,10 @@
 }
 
 .rank .list_table .table_col .img {
-  max-width: 14%;
-  min-width: 50px;
+  max-width: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  height: 100px;
 }
 
 .rank .table_row {
