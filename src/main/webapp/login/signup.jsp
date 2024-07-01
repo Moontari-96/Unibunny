@@ -76,6 +76,7 @@
 					<div class="signup">
 						<input type="text" placeholder="이메일" id="input_email" name="email">
 						<div class="message" id="email_message"></div>
+						<h2>＊이메일을 입력하여 주세요.*</h2>
 					</div>
 					<!-- 우편번호 -->
 					<div class="signup">
@@ -92,7 +93,7 @@
 					<div class="signup">
 						<input type="text" placeholder="주소2" id="input_address2" name="address2">
 					</div>
-					<button type="submit">가입하기</button>
+					<button type="submit" id="signup_form">가입하기</button>
 				</form>
 			</div>
 		</div>
