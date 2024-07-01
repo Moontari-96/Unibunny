@@ -29,7 +29,7 @@
                             <div class="title_box">
                                 <p class="title">Q&A 작성하기</p>
                             </div>
-                            <form id="qnaForm" action="/write.qna" method="post">
+                            <form id="qnaForm" action="/write.qna" method="post"  enctype="multipart/form-data">
                                 <div class="list_table">
                                     <div class="table_row table_header">
                                         <span>제목</span>
@@ -63,91 +63,85 @@
         <div class="footer_area">
             <!-- 생략된 푸터 코드 -->
         </div>
-    <script>
-        $(document).ready(function() {
-            $('#summernote').summernote({
-                height: 500,
-                minHeight: null,
-                maxHeight: null,
-                focus: true
-            });
+<script>
+    $(document).ready(function() {
+        // Summernote 에디터를 초기화합니다.
+        $('#summernote').summernote({
+            height: 500,         
+            minHeight: null,     
+            maxHeight: null,     
+            focus: true          
+        });
 
-            var fileClickCount = 0;
-            var maxFiles = 5;
+        
+        $('#qnaForm').on('submit', function(event) {
+            event.preventDefault();
 
-            $('#file').on('click', function() {
-                if (fileClickCount < maxFiles) {
-                    var fileInputWrapper = $('<div class="file-input-wrapper">' +
-                        '<input type="file" name="files[]">' +
-                        '<button type="button" class="removeFileInput">-</button>' +
-                        '</div>');
-                    $('#filebox').append(fileInputWrapper);
-                    fileClickCount++;
-                } else {
-                    alert('최대 5개의 파일만 업로드할 수 있습니다.');
-                }
-            });
+            // 제목 및 내용 변수에 저장
+            var questionTitle = $('#title').val().trim();
+            var questionContent = $('#summernote').summernote('code').trim();
 
-            $('#filebox').on('click', '.removeFileInput', function() {
-                $(this).closest('.file-input-wrapper').remove();
-                fileClickCount--;
-            });
+         	// 제목이 입력되지 않은 경우 얼럿창!
+            if (!questionTitle) {
+                alert('제목을 입력하세요.');
+                return false;
+            }
 
-            $('#qnaForm').on('submit', function(event) {
-                event.preventDefault();
+            // 내용이 입력되지 않은 경우 얼럿창!
+            if ($('#summernote').summernote('isEmpty')) {
+                alert('내용을 입력하세요.');
+                return false;
+            }
 
-                var questionTitle = $('#title').val().trim();
-                var questionContent = $('#summernote').summernote('code').trim();
+            var form = $(this);  // 폼 객체를 변수에 저장합니다.
 
-                if (!questionTitle) {
-                    alert('제목을 입력하세요.');
-                    return false;
-                }
+            // 폼 데이터를 AJAX 요청으로 서버에 전송합니다.
+            $.ajax({
+                url: form.attr('action'),  // 폼의 action 속성에서 URL을 가져옵니다.
+                method: 'POST',            // HTTP POST 메서드를 사용합니다.
+                data: form.serialize(),    // 폼 데이터를 직렬화하여 전송합니다.
+                success: function(response) {
+                    alert('Q&A 작성 완료');
 
-                if ($('#summernote').summernote('isEmpty')) {
-                    alert('내용을 입력하세요.');
-                    return false;
-                }
+                    var question_seq = response.question_seq;  // 서버 응답에서 question_seq를 가져옵니다.
+                    var fileInputs = $('#filebox').find('input[type="file"]');  // 파일 입력 요소를 찾습니다.
 
-                var form = $(this);
-                $.ajax({
-                    url: form.attr('action'),
-                    method: 'POST',
-                    data: form.serialize(),
-                    success: function(response) {
-                        alert('Q&A 작성 완료');
-                        var question_seq = response.question_seq;
-                        var fileInputs = $('#filebox').find('input[type="file"]');
-                        if (fileInputs.length > 0) {
-                            var formData = new FormData();
-                            fileInputs.each(function(index, fileInput) {
-                                formData.append('files[]', fileInput.files[0]);
-                            });
-                            formData.append('question_seq', question_seq);
-                            $.ajax({
-                                url: '/upload.qnafile',
-                                method: 'POST',
-                                data: formData,
-                                processData: false,
-                                contentType: false,
-                                success: function(fileResponse) {
-                                    window.location.href = '/list.faq';
-                                },
-                                error: function() {
-                                    alert('파일 업로드 중 오류 발생');
-                                }
-                            });
-                        } else {
-                            window.location.href = '/list.faq';
-                        }
-                    },
-                    error: function() {
-                        alert('Q&A 작성 중 오류 발생');
+                    // 파일 입력 요소가 있는 경우
+                    if (fileInputs.length > 0) {
+                    	// 새로운 FormData 객체를 생성
+                        var formData = new FormData();  
+                        // 각 파일 입력 요소의 파일을 formData에 추가합니다.
+                        fileInputs.each(function(index, fileInput) {
+                            formData.append('files[]', fileInput.files[0]);
+                        });
+                    	 // question_seq를 formData에 추가
+                        formData.append('question_seq', question_seq);  
+
+                        // 파일 데이터를 AJAX 요청으로 서버에 전송합니다.
+                        $.ajax({
+                            url: '/upload.qnafile',  // 파일 업로드를 처리할 서버 URL
+                            method: 'POST',          // HTTP POST 메서드를 사용합니다.
+                            data: formData,          // 파일 데이터를 전송합니다.
+                            processData: false,      // 데이터를 처리하지 않도록 설정합니다.
+                            contentType: false,      // contentType을 false로 설정합니다.
+                            success: function(fileResponse) {
+                                window.location.href = '/list.faq';
+                            },
+                            error: function() {
+                                alert('파일 업로드 중 오류 발생');
+                            }
+                        });
+                    } else {
+                        window.location.href = '/list.faq';
                     }
-                });
+                },
+                error: function() {
+                    alert('Q&A 작성 중 오류 발생');
+                }
             });
         });
-    </script>
-    </div>
+    });
+</script>
+
 </body>
 </html>
