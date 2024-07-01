@@ -295,6 +295,10 @@
   bottom: 30%;
 }
 
+.con_wrap.main_con .dual_con .rank_con .rank_cont div a  img{
+	object-fit:cover;
+}
+
 
 /* 게시판 콘테이너  */
 .con_wrap.main_con .dual_con .noti_con {
