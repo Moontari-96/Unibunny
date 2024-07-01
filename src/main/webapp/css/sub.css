@@ -1282,8 +1282,10 @@
 }
 
 .rank .list_table .table_col .img {
-  max-width: 14%;
-  min-width: 50px;
+  max-width: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  height: 100px;
 }
 
 .rank .table_row {
