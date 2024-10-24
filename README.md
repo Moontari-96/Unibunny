@@ -61,8 +61,9 @@ DB: Oracle 11
 개발 툴:
 
 Eclipse
-IntelliJ
-VSCode
-Sql-Developer
-DBeaver
+, IntelliJ
+, VSCode
+, Sql-Developer
+, DBeaver
+
 웹 서비스: AWS EC2
