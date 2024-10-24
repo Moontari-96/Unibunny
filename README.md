@@ -9,6 +9,7 @@ Unibunny는 "Universe(우주)"와 "Bunny(토끼)"의 합성어로, 사용자가 
 
 
 🛠 프로젝트 멤버 및 역할
+
 박종호 (Leader)
 
 사용자 로그인 및 회원가입 구현
@@ -47,6 +48,7 @@ DB 설계 및 ERD 작성
 
 
 💻 개발 환경
+
 Front-End: HTML5, CSS3, JavaScript (ES6+), JSP
 
 Back-End: Java (OpenJDK 11)
